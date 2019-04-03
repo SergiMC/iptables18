@@ -39,13 +39,21 @@ iptables -A INPUT -p tcp --dport 4080 -j DROP
 iptables -A INPUT -p tcp --dport 5080 -s 192.168.2.56 -j REJECT
 iptables -A INPUT -p tcp --dport 5080 -j ACCEPT
 # port 5080 tancat a tohom, obert a hisx2 tancat a i26
-
 iptables -A INPUT -p tcp --dport 6080 -s 192.168.2.56 -j REJECT
 iptables -A INPUT -p tcp --dport 6080 -s 192.168.2.0/24 -j ACCEPT
 iptables -A INPUT -p tcp --dport 6080 -j DROP
 ##############################################
 
+# port 7080 obert a tothom,tancat hisx2, obert a i04
+iptables -A INPUT -p tcp --dport 7080 -s 192.168.2.34 -j ACCEPT
+iptables -A INPUT -p tcp --dport 7080 -s 192.168.2.0/24 -j DROP
+iptables -A INPUT -p tcp --dport 7080 -j ACCEPT
 
+##############################################
 
-
+#tancar acces ports del 3000 al 8000
+#iptables -A INPUT -p tcp --dport 3000:8000 -j REJECT
+#barreres finals de tancar (quedar tancat!)
+#iptables -A INPUT -p tcp --dport 1:1024 -j DROP 
+##############################################
 

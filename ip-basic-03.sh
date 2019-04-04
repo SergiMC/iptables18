@@ -37,8 +37,20 @@ iptables -A OUTPUT -d 192.168.0.18 -j ACCEPT
 ##########################################
 #permetre navegar per internet (BEN FETA)
 #A) SORTIDA
-iptables -A OUTPUT -p tcp -m tcp --dport 80 -j ACCEPT
+#iptables -A OUTPUT -p tcp -m tcp --dport 80 -j ACCEPT
 #B) RESPOSTA ENTRADA (tenim port dinamic)
-iptables -A INPUT -p tcp --sport 80 -m tcp -m state --state RELATED,ESTABLISHED -j ACCEPT #HA DE SER UNA CONNEXIO QUE JA L'HAGEM INICIAT.
+#iptables -A INPUT -p tcp --sport 80 -m tcp -m state --state RELATED,ESTABLISHED -j ACCEPT #HA DE SER UNA CONNEXIO QUE JA L'HAGEM INICIAT.
 
+#Oferir el servei web,permetre només respostes
+#a peticions establertes
+
+#iptables -A OUTPUT -p tcp --sport 80 -m tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+#iptables -A INPUT -p tcp --dport 80 -j ACCEPT #iniciar sessions en un port
+
+#oferir el servei web a tothom menys al i04
+
+iptables -A INPUT -p tcp -s 192.168.2.34 --dport 80 -j REJECT
+iptables -A OUTPUT -p tcp --sport 80 -m tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -p tcp --sport 80 -j ACCEPT
 

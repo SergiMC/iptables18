@@ -31,7 +31,7 @@ iptables -A OUTPUT -d 192.168.0.18 -j ACCEPT
 # 172.22.0.0/24
 iptables -t nat -A POSTROUTING -s 172.21.0.0/24 -o enp5s0 -j MASQUERADE
 iptables -t nat -A POSTROUTING -s 172.23.0.0/24 -o enp5s0 -j MASQUERADE
-
+iptables -t nat -A POSTROUTING -s 172.24.0.0/24 -o enp5s0 -j MASQUERADE
 #Exemples port forwarding
 #iptables -A INPUT -pt tcp --dport 13 -j REJECT # tot el tràfic input router xapa'l #FUNCIONARÀ 5003 NOMÈS
 #iptables -A FORWARD -p tcp --dport 13 -j REJECT # tot el trafic que es destini al port 13 de creuament xapa'l. #FUNCIONARÀ 5001 5002 
@@ -52,6 +52,24 @@ iptables -t nat -A POSTROUTING -s 172.23.0.0/24 -o enp5s0 -j MASQUERADE
 #iptables -t nat -A PREROUTING -s 172.23.0.0/24 -p tcp --dport 25 -j DNAT --to 192.168.2.40:25
 
 #Quan volem entrar al marca/liga, sortirà el server web de l'escola del treball
-iptables -t nat -A PREROUTING -s 172.21.0.0/24 -p tcp --dport 80 -j DNAT -to 10.1.1.8:80
-iptables -t nat -A PREROUTING -s 172.23.0.0/24 -p tcp --dport 80 -j DNAT -to 10.1.1.8:80
-# 
+#iptables -t nat -A PREROUTING -s 172.21.0.0/24 -p tcp --dport 80 -j DNAT -to 10.1.1.8:80
+#iptables -t nat -A PREROUTING -s 172.23.0.0/24 -p tcp --dport 80 -j DNAT -to 10.1.1.8:80
+#####################################################################
+#PRÀCTICA
+#####################################################################
+#de la xarxaA només es pot accedir ,del router/firewall ,als serveis: ssh i daytime(13)
+iptables -A INPUT -s 172.21.0.0/24 -p tcp --dport 22 -j ACCEPT 
+iptables -A INPUT -s 172.21.0.0/24 -p tcp --dport 13 -j ACCEPT
+
+#de la xarxaA només es pot accedir a l'exterior als serveis web, ssh i daytime(2013)
+iptables -A FORWARD -p tcp -s 172.21.0.0/24 --sport 80 -i enp5s0 -mstate --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -s 172.21.0.0/24 --dport 80 -o enp5s0 -j ACCEPT
+iptables -A FORWARD -p tcp -s 172.21.0.0/24 --sport 22 -i enp5s0 -mstate --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -s 172.21.0.0/24 --dport 22 -o enp5s0 -j ACCEPT
+iptables -A FORWARD -p tcp -s 172.21.0.0/24 --sport 2013 -i enp5s0 -mstate --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -s 172.21.0.0/24 --dport 2013 -o enp5s0 -j ACCEPT
+iptables -A FORWARD -s 172.21.0.0/24 -o enp5s0 -j REJECT
+iptables -A FORWARD -d 172.21.0.0/24 -i enp5s0 -j REJECT
+
+
+

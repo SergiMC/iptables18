@@ -40,25 +40,53 @@ iptables -A OUTPUT -d 10.1.1.200 -p udp -m udp --dport 53 -j ACCEPT
 iptables -A INPUT -p udp -m udp --sport 123 -j ACCEPT
 iptables -A OUTPUT -p udp -m udp --dport 123 -j ACCEPT
 
-# Consultem CUPS (Sistema d'impresio)
+# Consultem CUPS (Sistema d'impresio) (obrim)
 
 iptables -A INPUT  -p tcp  --dport 631 -j ACCEPT
 iptables -A OUTPUT -p tcp  --sport 631 -j ACCEPT
 
-# Consultem servei xinetd
+# Consultem servei xinetd (obrim)
 
 iptables -A INPUT  -p tcp  --dport 3411 -j ACCEPT
 iptables -A OUTPUT -p tcp  --sport 3411 -j ACCEPT
 
-# Consultem X11-FORWARD
+# Consultem X11-FORWARD (obrim)
 
 iptables -A INPUT -p tcp --dport 6010 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 6010 -j ACCEPT
 
-#Consultem servei rpc (REMOTE PROCEDURE CALL)
+#Consultem servei rpc (REMOTE PROCEDURE CALL) (obrim)
 #PERMET CONNEXIÓ D'UNA APP A UN HOST SENSE PREOCUPAR-SE DE LA COMUNICACIÓ
 
 iptables -A INPUT -p tcp --dport 111 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 111 -j ACCEPT
 
-iptables -A INPUT -p tcp 
+# Consultem icmp (Linux IPv4 ICMP kernel module) (obrim)
+
+iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
+iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
+
+# Consultem servei ssh (obrim)
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
+
+#Consultem servei http (obrim) 
+#TOT EL QUE ENTRI QUE VINGUI DEL PORT  80
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 80 -m   -j ACCEPT
+
+#Consultem servei smtp (obrim)
+
+iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 25 -j ACCEPT
+
+#Consultem servei echo (obrim)
+
+iptables -A INPUT -p tcp --dport 7 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 7 -j ACCEPT
+
+#Consultem servei daytime (obrim)
+iptables -A INPUT -p tcp --dport 13 -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 13 -j ACCEPT
+
+

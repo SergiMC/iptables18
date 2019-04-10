@@ -22,8 +22,8 @@ iptables -A INPUT  -i lo -j ACCEPT
 iptables -A OUTPUT -o lo -j ACCEPT
 
 # obrir la nostra ip
-iptables -A INPUT -s 192.168.0.18 -j ACCEPT
-iptables -A OUTPUT -d 192.168.0.18 -j ACCEPT
+iptables -A INPUT -s 192.168.2.40 -j ACCEPT
+iptables -A OUTPUT -d 192.168.2.40 -j ACCEPT
 
 
 

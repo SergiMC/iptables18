@@ -35,6 +35,12 @@ iptables -A OUTPUT -d 192.168.0.10 -p udp -m udp --dport 53 -j ACCEPT
 iptables -A INPUT -s 10.1.1.200 -p udp  -m udp --sport 53 -j ACCEPT
 iptables -A OUTPUT -d 10.1.1.200 -p udp -m udp --dport 53 -j ACCEPT
 
+#Consultem dhcp (obrim)
+iptables -A INPUT -p udp --sport 67 -j ACCEPT
+iptables -A OUTPUT -p udp --dport 67 -j ACCEPT
+iptables -A INPUT -p udp --sport 68 -j ACCEPT
+iptables -A OUTPUT -p udp --dport 68 -j ACCEPT
+
 # Sincronitzem  el NTP (Network Time Protocol) amb enrutament (sistema de sicronització del rellotge del sistema).
 
 iptables -A INPUT -p udp -m udp --sport 123 -j ACCEPT
@@ -71,9 +77,19 @@ iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
 
 #Consultem servei http (obrim) 
-#TOT EL QUE ENTRI QUE VINGUI DEL PORT  80
+
+#TOT EL QUE ENTRI AL PORT 80 de la maquina
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 80 -m   -j ACCEPT
+#TOT EL QUE SURTI DEL PORT 80
+iptables -A OUTPUT -p tcp --sport 80 -m state --state RELATED,ESTABLISHED  -j ACCEPT
+#Consultem servei ldap (obrim)
+#ldap gandhi : 53110
+iptables -A INPUT -p tcp --sport 389 -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 389 -j ACCEPT
+iptables -A INPUT -p tcp --sport 636 -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 636 -j ACCEPT
+iptables -A INPUT -p tcp --dport 53110 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 53110 -j ACCEPT 
 
 #Consultem servei smtp (obrim)
 
@@ -81,12 +97,29 @@ iptables -A INPUT -p tcp --dport 25 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 25 -j ACCEPT
 
 #Consultem servei echo (obrim)
-
-iptables -A INPUT -p tcp --dport 7 -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 7 -j ACCEPT
+#TOT EL QUE ENTRI/VINGUI D'UN PORT SOURCE 7
+iptables -A INPUT -p tcp --sport 7 -j ACCEPT
+#TOT EL QUE SURTI I VA AL PORT DESTÍ
+iptables -A OUTPUT -p tcp --dport 7 -j ACCEPT
 
 #Consultem servei daytime (obrim)
-iptables -A INPUT -p tcp --dport 13 -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 13 -j ACCEPT
+iptables -A INPUT -p tcp --sport 13 -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 13 -j ACCEPT
 
+#Consultem servei ssh
+iptables -A INPUT -p tcp --sport 22 -m state --state RELATED,ESTABLISHED -j ACCEPT 
+iptables -A OUTPUT -p tcp --dport 22 -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#Consultem tràfic UDP (ftp/tftp)
+
+#Ofereix servei tftp
+iptables -A INPUT -p udp --dport 69 -j ACCEPT
+iptables -A OUTPUT -p udp --sport 69 -j ACCEPT
+
+#oferir ports ftp
+iptables -A INPUT -p udp --dport 20:21 -j ACCEPT
+iptables -A OUTPUT -p udp --sport 20:21 -j ACCEPT
+
+#obrir ports dinamics
+iptables -A INPUT -p tcp --dport 49152:65535 -A ACCEPT
 

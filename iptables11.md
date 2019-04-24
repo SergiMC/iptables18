@@ -15,7 +15,8 @@ iptables -t nat -A POSTROUTING -s 172.206.0.0/16 -o enp5s0 -j MASQUERADE
 
 
 * (2) en el router el port 3001 porta a un servei del host1 i el port 3002 a un servei del host2.
-
+**Tot el que entri per l'interfície enp5s0 qur vingui del port 3001 que l'envii al port 13 del hostA**
+**Tot el que entri per l'interfície enp5s0 qur vingui del port 3002 que l'envii al port 7 del hostA**
 ```
 #S'habilita el port 3001 en endavant per accedir per daytime al port daytime del hostA
 iptables -t nat -A PREROUTING -i enp5s0 -p tcp  --dport 3001 -j DNAT --to 172.206.0.2:13
@@ -94,6 +95,7 @@ iptables -A FORWARD -d 172.206.0.0/16 -i enp5s0 -j REJECT
 * (6) no es permet que els hosts de la xarxa interna facin ping a l'exterior.
 
 **Desde la xarxa 172.206.0.0 per la sortida de la interifice enp5s0 xapem els pings.**
+** Tot el ping de la xarxa 172.206.0.0/16 que surti per enp5s0 no es permet. 
 
 ```
 iptables -A FORWARD -s 172.206.0.0/16  -o enp5s0 -p icmp --icmp-type 8 -j DROP
@@ -108,7 +110,7 @@ NO FA PING! CORRECTE!
 * (7) el router no contesta als pings que rep, però si que pot fer ping.
 
 **La sortida del ping del router la xapem**
-
+**Tot el tràfic que surt de la xarxa 172.206.0.1 (en aquest cas el ping) el xapem.**
 ```
 iptables -A OUTPUT -s 172.206.0.1/16 -p icmp --icmp-type 0 -j DROP
 

@@ -26,9 +26,9 @@ iptables -A OUTPUT -d 192.168.2.34 -j ACCEPT
 iptables -t nat -A POSTROUTING -s 172.206.0.0/16 -o enp5s0 -j MASQUERADE
 
 #S'habilita el port 3001 en endavant per accedir fent un telnet al port daytime del hostA
-iptables -t nat -A PREROUTING -i enp5s0 -p tcp  --dport 3001 -j DNAT --to 172.206.0.2:13
-#S'habilita el port 3001 en endavant per accedir fent un telnet  al port echo del hostB
-iptables -t nat -A PREROUTING -i enp5s0 -p tcp --dport 3002 -j DNAT --to 172.206.0.3:7
+iptables -t nat -A PREROUTING  -p tcp  --dport 3001 -j DNAT --to 172.206.0.2:13
+#S'habilita el port 3002 en endavant per accedir fent un telnet  al port echo del hostB
+iptables -t nat -A PREROUTING  -p tcp --dport 3002 -j DNAT --to 172.206.0.3:7
 
 #DESDE L'EXTERIOR
 #S'habilita el port 4001 en endavant per accedir per ssh al port ssh del hostA (EXTERIOR)
